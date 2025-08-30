@@ -114,7 +114,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 80;
 connectToDB()
   .then(msg => {
     console.log(msg);
