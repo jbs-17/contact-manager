@@ -5,8 +5,7 @@
   "description": "Final Project Belajar Dasar node.js",
   "main": "app.mjs",
   "scripts": {
-    "start": "node app.mjs",
-    "install":"npm install"
+    "start": "node app.mjs"
   },
   "repository": {
     "type": "git",
