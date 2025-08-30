@@ -1,0 +1,101 @@
+<div class="container-lg p-lg-3 mt-3">
+
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      Settings
+    </h1>
+    <p class="lead text-muted m-1">
+      Manage your account and application settings
+    </p>
+
+    <hr>
+    <%- include('./partials/nav-signedin.ejs') %>
+      <hr>
+
+
+
+      <% if (info.length) { %>
+        <div class="alert alert-info">
+          <%= info %>
+        </div>
+        <% } %>
+
+          <div class="container-md">
+            <!-- Settings Cards Row -->
+            <div class="row g-4 mb-4">
+              <!-- Email Card -->
+              <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h3 class="card-title">Email</h3>
+                    <p class="card-text">
+                      <%= email %>
+                    </p>
+                    <div class="d-grid gap-2">
+                      <a href="/email" type="button" class="btn btn-primary btn-sm">
+                        Change Email
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password Card -->
+              <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h3 class="card-title">Password</h3>
+                    <p class="card-text">
+                      Password settings and security
+                    </p>
+                    <div class="d-grid gap-2">
+                      <a href="/password" type="button" class="btn btn-primary btn-sm">
+                        Change Password
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Additional settings card if needed -->
+              <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h3 class="card-title">Theme</h3>
+                    <p class="card-text">
+                      <%= settings.theme %>
+                    </p>
+
+                      <form class="d-grid gap-2" method="get" action="/settings">
+                        <input hidden type="search" name="theme"
+                          value="<%= settings.theme === 'default' ? 'dark' : 'default' %>">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                          Change to <%= settings.theme==='default' ? 'Dark' : 'Default' %> Theme
+                        </button>
+                      </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="d-grid">
+                  <button type="button" class="btn btn-danger">
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-grid">
+                  <button type="button" class="btn btn-outline-primary">
+                    Reset Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+  </div>

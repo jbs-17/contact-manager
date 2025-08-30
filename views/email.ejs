@@ -1,0 +1,45 @@
+<div class="container-lg p-lg-3 mt-3">
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      Change Email Account
+    </h1>
+    <p class="lead text-muted m-1">
+      Edit Your email account
+    </p>
+    <hr>
+    <%- include('./partials/nav-signedin.ejs') %>
+      <hr>
+
+      <% if (info.length) { %>
+        <div class="alert alert-success" role="alert">
+          <strong>Succed to set new email!</strong>
+        </div>
+        <% } %>
+          <% if (error.length) { %>
+            <div class="alert alert-danger" role="alert">
+              <strong>Failed to set new email!</strong><br>
+              <%= error %>
+            </div>
+            <% } %>
+
+              <form action="?_method=PATCH" method="post"
+                class="form-control d-flex mx-auto my-4 p-3 col-md-12 row shadow-lg">
+                <div class="mb-3 col-md-12">
+                  <label for="" class="form-label fw-bold fs-6">Your current email</label>
+                  <input required type="email" class="form-control form-text btn-outline-dark border-dark rounded-0"
+                    name="email-old" />
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label for="" class="form-label fw-bold fs-6">Your Account Password</label>
+                  <input required type="password" class="form-control form-text btn-outline-dark border-dark rounded-0"
+                    name="password" />
+                </div>
+                <div class="mb-3 col-md-12">
+                  <label for="" class="form-label fw-bold fs-6">Your new email</label>
+                  <input required type="email" class="form-control form-text btn-outline-dark border-dark rounded-0"
+                    name="email-new" />
+                </div>
+
+                <input type="submit" value="Change My Email Account" class="btn btn-primary col-md-6 mx-auto m-3 p-1">
+              </form>

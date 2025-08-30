@@ -1,0 +1,267 @@
+<!-- <div class="container-lg p-lg-3 mt-3">
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      Add Contact
+    </h1>
+    <p class="lead text-muted m-1">
+      Store your contact information dinamically and flexibelly
+    </p>
+
+
+    <hr>
+
+
+
+    <div class="card">
+      <div class="card-body p-3 p-lg-3 m-4 mt-2">
+
+        <div class="row rounded-0">
+          <label for="colFormLabelLg" class="fw-bold col-sm-2 col-form-label col-form-label-lg text-uppercase">Contact
+            Name</label>
+          <div class="col-sm-10">
+            <input required type="text" name="name" id="name" class="form-control form-control-lg rounded-0"
+              id="colFormLabelLg" placeholder="Contact Name">
+          </div>
+        </div>
+
+        <hr>
+        <ul class="list-group list-group-flush" id="field-parent">
+
+          <li class="list-group-item text-uppercase" style="border: unset;">
+            <h4>Dynamic Field</h4>
+          </li>
+
+
+
+
+          <li class="list-group-item border-bottom border-top p-3" fieldchild="0" style="border-bottom: unset;">
+            <div class="row g-3">
+              <div class="col">
+                <input type="text" class="form-control rounded-0 fw-bold text-uppercase" placeholder="Field Name"
+                  aria-label="Field Name" name="field-0">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control rounded-0 fw-bold text-uppercase" placeholder="Value"
+                  aria-label="Value" name="value-0">
+              </div>
+            </div>
+          </li>
+
+
+
+
+
+          <li class="list-group-item not-">
+            <button id="add-field-btn" class="btn btn-primary btn-sm bg-primary">Add New Field +</button>
+          </li>
+
+          <script>
+            document.getElementById('add-field-btn').addEventListener('click', newField);
+
+            function newField() {
+              const fieldchilds = document.getElementById('field-parent')
+                .querySelectorAll('li[fieldchild]');
+              const lastfieldchilds = fieldchilds[fieldchilds.length - 1];
+              const length = fieldchilds.length;
+              const fieldchild = document.createElement('li');
+              fieldchild.style.border = 'unset';
+              "list-group-item border-bottom border-top p-3 li-field".split(" ").forEach(c => {
+                fieldchild.classList.add(c);
+              });
+              fieldchild.setAttribute('fieldchild', length)
+              fieldchild.innerHTML = `
+              <div class="row g-3">
+                <div class="col">
+                  <input type="text" class="form-control rounded-0 fw-bold text-uppercase" placeholder="Field Name"
+                    aria-label="Field Name" name="field-${length}">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control rounded-0 fw-bold text-uppercase" placeholder="Value"
+                    aria-label="Value" name="value-${length}">
+                </div>
+              </div>
+                `;
+              lastfieldchilds.after(fieldchild);
+              console.log(1);
+              console.log(lastfieldchilds);
+              console.log(fieldchild);
+
+            }
+          </script>
+
+        </ul>
+
+
+      </div>
+    </div>
+
+
+
+
+
+
+  </div> -->
+
+
+<div class="container-lg p-lg-3 mt-3">
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">Add Contact</h1>
+    <p class="lead text-muted m-1">
+      Store your contact information dynamically and flexibly
+    </p>
+    <hr>
+    <%- include('./partials/nav-signedin.ejs') %>
+      <hr>
+
+      <% if (error.length) { %>
+        <div class="alert alert-danger" role="alert">
+          <%= error %>
+        </div>
+        <% }else if(info.length){ %>
+          <div class="alert alert-success" role="alert">
+            <%= info %>
+          </div>
+          <% } %>
+
+            <form class="card" method="post" add>
+              <div class="card-body p-3 m-2 m-lg-4">
+
+                <!-- Contact Name -->
+                <div class="row mb-3">
+                  <label for="name" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Contact Name</label>
+                  <div class="col-12 col-md-10">
+                    <input required type="text" name="name" id="name"
+                      class="form-control rounded-0 fw-bold outline outline-alert <%= info.length && error.length ? 'border border-3 border-danger' : '' %>"
+                      placeholder="Contact Name">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="priority" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Priority</label>
+                  <div class="col-12 col-md-10">
+                    <input value="0" required type="number" min="0" max="100" name="priority" id="priority"
+                      class="form-control rounded-0 fw-bold text-uppercase" placeholder="Priority 0 - 100">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="priority" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Favorite</label>
+                  <div class="col-12 col-md-10">
+                    <div class="form-check">
+                      <input <% if (formData.favorite) { %>
+                      <%= "checked" %>
+                        <% } %> class="form-check-input" type="checkbox" value="1" id="flexCheckIndeterminate"
+                          name="favorite">
+                          <label class="form-check-label" for="flexCheckIndeterminate">
+                            Favorite contact
+                          </label>
+                    </div>
+                  </div>
+                </div>
+
+                <hr>
+
+                <!-- Dynamic Fields -->
+                <ul class="list-group list-group-flush" id="field-parent">
+                  <li class="list-group-item text-uppercase border-0">
+                    <h5>Dynamic Field</h5>
+                    <p>include contact information flexibly in the unlimited fields</p>
+                  </li>
+
+                  <li class="list-group-item border-bottom border-top p-3" fieldchild="0">
+                    <div class="row g-4">
+                      <div class="col-12 col-md-6">
+                        <input type="text" class="form-control rounded-0 fw-bold" placeholder="Field Name"
+                          aria-label="Field Name" name="field-0">
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <input type="text" class="form-control rounded-0 fw-bold" placeholder="Value" aria-label="Value"
+                          name="value-0">
+                      </div>
+                    </div>
+                  </li>
+
+                  <li class="list-group-item">
+                    <button id="add-field-btn" class="btn btn-primary btn-sm m-1 col" type="button">Add New Field +</button>
+                    <button class="btn btn-dark btn-sm border border-1 border-white m-1 col" type="submit">Save Contact</button>
+                  </li>
+
+                  <script>
+
+
+
+                    document.getElementById('add-field-btn').addEventListener('click', newField);
+
+                    function newField() {
+                      const fieldchilds = document.getElementById('field-parent').querySelectorAll('li[fieldchild]');
+                      const lastfieldchilds = fieldchilds[fieldchilds.length - 1];
+                      const length = fieldchilds.length;
+                      const fieldchild = document.createElement('li');
+                      fieldchild.className = "list-group-item border-bottom border-top p-3";
+                      fieldchild.setAttribute('fieldchild', length);
+                      fieldchild.innerHTML = `
+                      <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                          <input oninput="saveForm()" type="text" class="form-control rounded-0 fw-bold" placeholder="Field Name"
+                            aria-label="Field Name" name="field-${length}">
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <input oninput="saveForm()" type="text" class="form-control rounded-0 fw-bold" placeholder="Value"
+                            aria-label="Value" name="value-${length}">
+                        </div>
+                        <div class="col-2">
+                          <button class="btn btn-sm btn-danger" value="" type="button" onclick="this.parentElement.parentElement.parentElement.remove(); saveForm();">Delete</button>
+                        </div>
+                      </div>
+                `;
+                      lastfieldchilds.after(fieldchild);
+                    };
+                    function saveForm() {
+                      const formData = new FormData(document.querySelector('form[add]'));
+                      const entries = formData.entries();
+                      const form = [];
+                      formData.forEach(field => {
+                        const [key, value] = entries.next().value;
+                        form.push([key, value]);
+                      });
+                      localStorage.setItem('saveForm', JSON.stringify(form));
+                    }
+                    document.querySelectorAll('input').forEach(i => {
+                      i.addEventListener('input', (e) => {
+                        saveForm();
+                      })
+                    });
+
+                    document.addEventListener("DOMContentLoaded", function () {
+                      const form = localStorage.getItem('saveForm');
+                      if (form === null) {
+                        return
+                      }
+                      let saveForm;
+                      try {
+                        saveForm = JSON.parse(form);
+                      } catch (error) {
+                        console.log(error);
+                        const form = localStorage.removeItem('saveForm');
+                      };
+                      saveForm.forEach(([key, value]) => {
+                        console.log('object');
+                        const inp = document.querySelector(`[name=${key}]`);
+                        if (inp) {
+                          return inp.value = value
+                        };
+                        if (key.includes('field-')) {
+                          newField();
+                          const inp = document.querySelector(`[name=${key}]`);
+                          inp.value = value
+                        }
+                      })
+                    });
+                  </script>
+                </ul>
+              </div>
+
+            </form>
+
+  </div>
+</div>

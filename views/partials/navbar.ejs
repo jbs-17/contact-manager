@@ -1,0 +1,198 @@
+<div id="nav-parent">
+
+</div>
+<template id="template-nav-mobile">
+  <nav class="navbar navbar-expand-lg navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand text-light" href="#">Contact Manager</a>
+      <button class="navbar-toggler border-light" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon "></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 " id="navbar">
+          <hr class="text-white">
+
+          <li class="nav-item">
+            <a class="text-light nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/about">About</a>
+          </li>
+
+          <hr class="text-white">
+
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/dashboard">Dashboard</a>
+            <a class="text-light nav-link" href="/settings">Settings</a>
+          </li>
+
+          <hr class="text-white">
+
+
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/sign-up">Sign Up</a>
+          </li>
+
+
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/sign-in">Sign In</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/sign-out">Sign Out</a>
+          </li>
+
+
+          <li class="nav-item dropdown" id="dashboard-actions">
+            <a class="nav-link dropdown-toggle nav-link text-light" data-bs-toggle="dropdown" href="#" role="button"
+              aria-expanded="false">Contact</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/contacts">View all contacts</a></li>
+              <li><a class="dropdown-item" href="/search">Search contacts</a></li>
+              <li><a class="dropdown-item" href="/contact/add">Add new contact</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="/dashboard">Dashboard Menu</a></li>
+              <li><a class="dropdown-item" href="/settings">Settings</a></li>
+            </ul>
+          </li>
+
+
+
+
+
+        </ul>
+
+
+        <form target="_self" action="/search" method="get" id="nav-search-form" class="d-flex" role="search">
+          <input name="q" type="search" class="form-control me-2" placeholder="Search Contact" aria-label="Search">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+        </form>
+
+
+      </div>
+    </div>
+  </nav>
+</template>
+
+<template id="template-nav-desktop">
+  <nav class="navbar navbar-expand-lg navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand text-light" href="#">Contact Manager</a>
+      <button class="navbar-toggler border-light" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <!-- Left side navigation -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navbar">
+          <li class="nav-item">
+            <a class="text-light nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="text-light nav-link" href="/dashboard">Dashboard</a>
+          </li>
+
+          <li class="nav-item dropdown" id="dashboard-actions">
+            <a class="nav-link dropdown-toggle nav-link text-light" data-bs-toggle="dropdown" href="#" role="button"
+              aria-expanded="false">Contact</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/contacts">View all contacts</a></li>
+              <li><a class="dropdown-item" href="/search">Search contacts</a></li>
+              <li><a class="dropdown-item" href="/contact/add">Add new contact</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="/dashboard">Dashboard Menu</a></li>
+              <li><a class="dropdown-item" href="/settings">Settings</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Right side: Search form and auth links -->
+        <div class="d-flex align-items-center">
+          <!-- Search Form -->
+          <form target="_self" action="/search" method="get" id="nav-search-form" class="d-flex me-3" role="search">
+            <input name="q" type="search" class="form-control me-2" placeholder="Search Contact" aria-label="Search">
+            <button class="btn btn-outline-light" type="submit">Search</button>
+          </form>
+
+          <!-- Authentication Links -->
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="text-light nav-link" href="/sign-in">Sign In</a>
+            </li>
+            <li class="nav-item">
+              <a class="text-light nav-link" href="/sign-up">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a class="text-light nav-link" href="/sign-out">Sign Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+</template>
+
+<script>
+  {
+    const navParent = document.getElementById('nav-parent');
+    const mobileTemplate = document.getElementById('template-nav-mobile');
+    const desktopTemplate = document.getElementById('template-nav-desktop');
+
+    let currentMode = null; // Track current mode to prevent unnecessary re-renders
+
+    function mobileOn() {
+      if (currentMode === 'mobile') return; // Prevent re-rendering if already mobile
+
+      navParent.innerHTML = ''; // Clear existing content
+      // Clone the template content to avoid consuming the original
+      const mobileContent = mobileTemplate.content.cloneNode(true);
+      navParent.appendChild(mobileContent);
+      currentMode = 'mobile';
+    }
+
+    function desktopOn() {
+      if (currentMode === 'desktop') return; // Prevent re-rendering if already desktop
+
+      navParent.innerHTML = ''; // Clear existing content
+      // Clone the template content to avoid consuming the original
+      const desktopContent = desktopTemplate.content.cloneNode(true);
+      navParent.appendChild(desktopContent);
+      currentMode = 'desktop';
+    }
+
+    function handleResize() {
+      const screenWidth = window.innerWidth;
+      if (screenWidth <= 968) {
+        mobileOn();
+      } else {
+        desktopOn();
+      }
+    }
+
+    // Add resize event listener
+    window.addEventListener('resize', handleResize);
+
+    // Initial load - determine which template to use
+    handleResize();
+
+    // Optional: Cleanup function if needed (for SPA or dynamic content)
+    window.navCleanup = function () {
+      window.removeEventListener('resize', handleResize);
+      currentMode = null;
+    };
+  }
+</script>

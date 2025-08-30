@@ -1,0 +1,170 @@
+<div class="container-lg p-lg-3 mt-3">
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      <% name %> Contact Editor
+    </h1>
+    <p class="lead text-muted m-1">
+      Edit Your contact <strong class="fw-bold">
+        <%= name %>
+      </strong> here
+    </p>
+    <hr>
+    <%- include('./partials/nav-signedin.ejs') %>
+      <hr>
+      <% if (info.length) { %>
+        <div class="alert alert-success" role="alert">
+          <%= info %>
+        </div>
+        <script>
+          localStorage.setItem('saveForm', '[]');
+        </script>
+        <hr>
+        <% } %>
+
+          <form class="card" method="post" action="/contact/edit/<%= name %>?_method=PATCH">
+            <input type="hidden" name="_id" value="<%= _id %>">
+            <div class="card-body p-3 m-2 m-lg-4">
+
+              <!-- Contact Name -->
+              <div class="row mb-3">
+                <label for="name" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Contact Name</label>
+                <div class="col-12 col-md-10">
+                  <input autocomplete="off" type="text" name="name" id="name" class="form-control rounded-0 fw-bold"
+                    value="<%= name %>" placeholder="Contact Name">
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="priority" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Priority</label>
+                <div class="col-12 col-md-10">
+                  <input autocomplete="off" value="<%= priority %>" type="number" min="0" max="100" name="priority"
+                    id="priority" class="form-control rounded-0 fw-bold text-uppercase" placeholder="Priority 0 - 100">
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="priority" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Favorite</label>
+                <div class="col-12 col-md-10">
+                  <div class="form-check">
+                    <input autocomplete="off" onchange="" name="favorite" class="form-check-input" type="checkbox"
+                      value="1" <%=favorite ? 'checked' : '' %>
+                    id="flexCheckIndeterminate" />
+                    <label class="form-check-label" for="flexCheckIndeterminate">
+                      Favorite contact
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="priority" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Created At</label>
+                <div class="col-12 col-md-10">
+                  <input readonly disabled autocomplete="off" value="<%= createdAt %>" type="text" min="0" max="100"
+                    name="priority" id="priority" class="form-control rounded-0 fw-bold text-uppercase">
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="priority" class="fw-bold col-12 col-md-2 col-form-label text-uppercase">Updated At</label>
+                <div class="col-12 col-md-10">
+                  <input readonly disabled autocomplete="off" value="<%= updatedAt %>" type="text" min="0" max="100"
+                    name="priority" id="priority" class="form-control rounded-0 fw-bold text-uppercase">
+                </div>
+              </div>
+
+              <hr>
+
+              <!-- Dynamic Fields -->
+              <ul class="list-group list-group-flush" id="field-parent">
+
+                <% if (fields.length) { %>
+                  <li class="list-group-item text-uppercase border-0">
+                    <h5>Dynamic Field</h5>
+                    <p>include contact information flexibly in the unlimited fields</p>
+                  </li>
+                  <% } %>
+
+
+                    <% fields.forEach(([field, value], i)=> { %>
+
+                      <li class="list-group-item border-bottom border-top p-3" fieldchild="0">
+                        <div class="row g-4">
+                          <div class="col-5">
+                            <input value="<%= field %>" type="text" class="form-control rounded-0 fw-bold"
+                              autocomplete="off" placeholder="Field Name" aria-label="Field Name" name="field-<%= i %>">
+                          </div>
+                          <div class="col-5">
+                            <input autocomplete="off" value="<%= value %>" type="text"
+                              class="form-control rounded-0 fw-bold" placeholder="Value" aria-label="Value"
+                              name="value-<%= i %>">
+                          </div>
+                          <div class="col-2">
+                            <button class="btn btn-sm btn-danger" value="" type="button"
+                              onclick="this.parentElement.parentElement.parentElement.remove(); saveForm();">Delete</button>
+                          </div>
+                        </div>
+                      </li>
+
+                      <% }) %>
+                        <span id="control-field"></span>
+
+                        <li class="list-group-item">
+                          <button class="btn btn-danger btn-sm m-1" type="button"
+                            onclick="location.reload()">Reset</button>
+                          <button id="add-field-btn" class="btn btn-primary btn-sm" type="button">Add New Field
+                            +</button>
+                          <button id="add-field-btn" class="btn btn-dark btn-sm m-1  border border-1 border-white"
+                            type="submit">Save Contact
+                            Edit</button>
+                        </li>
+
+
+
+
+                        <script>
+
+
+
+                          document.getElementById('add-field-btn').addEventListener('click', newField);
+
+                          function newField() {
+                            const fieldchilds = document.getElementById('field-parent').querySelectorAll('li[fieldchild]');
+                            let lastfieldchilds = fieldchilds[fieldchilds.length - 1];
+                            let length = fieldchilds?.length;
+                            console.log(lastfieldchilds);
+                            if (!lastfieldchilds) {
+                              lastfieldchilds = document.querySelector('#control-field');
+                            }
+                            const fieldchild = document.createElement('li');
+                            fieldchild.className = "list-group-item border-bottom border-top p-3";
+                            fieldchild.setAttribute('fieldchild', length);
+                            fieldchild.innerHTML = `
+                                            <div class="row g-4">
+                                              <div class="col-5">
+                                                <input oninput="" type="text" class="form-control rounded-0 fw-bold" placeholder="Field Name" autocomplete="off"
+                                                  aria-label="Field Name" name="field-${length}">
+                                              </div>
+                                              <div class="col-5">
+                                                <input oninput="" type="text" class="form-control rounded-0 fw-bold" placeholder="Value" autocomplete="off"
+                                                  aria-label="Value" name="value-${length}">
+                                              </div>
+                                              <div class="col-2">
+                                                <button class="btn btn-sm btn-danger" value="" type="button" onclick="this.parentElement.parentElement.parentElement.remove();">Delete</button>
+                                              </div>
+                                            </div>
+                                      `;
+                            lastfieldchilds.after(fieldchild);
+                          };
+
+
+                        </script>
+
+
+              </ul>
+            </div>
+
+          </form>
+
+  </div>
+</div>

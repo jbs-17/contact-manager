@@ -1,0 +1,52 @@
+<div class="container-md p-3">
+  <div class="d-flex flex-column justify-content-center align-items-center text-center gap-3 mt-3"
+    style="min-height: 80vh;">
+
+    <div class="card shadow  p-4" style="max-width: 420px; width: 100%;">
+      <h2 class="fw-bold mb-3" style="border-bottom: 2px solid #0d6efd; display: inline-block; padding-bottom: 4px;">
+        SIGN UP
+      </h2>
+      <p>Create an account</p>
+      <% if (msg.true) { %>
+        <div class="alert alert-success fs-6" role="alert">
+          <%= msg.true %>
+        </div>
+        <% }else if(msg.false){ %>
+          <div class="alert alert-danger fs-6 small fw-normal d-flex justify-content-center align-items-center flex-column"
+            role="alert" style="min-height: 24px;">
+            <%= msg.false %>
+              <% error.forEach(e=> { %>
+                <li><%= e.msg %></li>
+                  <% }) %>
+          </div>
+          <% } %>
+
+            <form method="post">
+              <div class="mb-3 text-start">
+                <label for="emailInput" class="form-label small">Email address</label>
+                <input value="<% if (email) { %>
+                 <%= email %>
+                <% } %>" required name="email" type="email" class="form-control form-control-sm <% if (error && error.some(e => e.path === 'email')) { %><%= "border-opacity-25 border border-4 border-danger" %>
+                <% } %>" id="emailInput">
+              </div>
+              <div class="mb-3 text-start">
+                <label for="passwordInput" class="form-label small">Password</label>
+                <input  required name="password" type="password" class="form-control form-control-sm <% if (error && error.some(e =>e.path.includes('password'))) { %><%= "border-opacity-25 border border-4 border-danger" %><% } %>" id="passwordInput">
+              </div>
+              <div class="mb-3 text-start">
+                <label for="confirmPasswordInput" class="form-label small">Confirm Password</label>
+                <input required name="password-confirmation" type="password" class="form-control form-control-sm <% if (error && error.some(e =>e.path.includes('password'))) { %><%= "border-opacity-25 border border-4 border-danger" %><% } %>"
+                  id="confirmPasswordInput">
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-sm w-100">SIGN UP</button>
+            </form>
+
+            <!-- Text bawah -->
+            <p class="mt-3 mb-0 small">
+              Already have an account? <a href="/sign-in" class="text-primary">Sign in!</a>
+            </p>
+    </div>
+
+  </div>
+</div>

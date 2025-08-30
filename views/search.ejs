@@ -1,0 +1,104 @@
+<div class="container-lg p-lg-3 mt-3">
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      Search Contact
+    </h1>
+    <p class="lead text-muted m-1">
+      Search your contact by name, field and value <br>
+    </p>
+    <hr>
+    <%- include('./partials/nav-signedin.ejs') %>
+      <hr>
+
+
+      <!-- Form pencarian -->
+      <form action="/search" method="get">
+        <div class="mb-3 m-auto d-flex w-100 justify-content-center align-items-center flex-row">
+          <!-- Input pencarian -->
+          <input type="search" class="form-control form-control-sm btn-outline-dark w-75 border m-1 p-2" name="q"
+            aria-describedby="search-help" placeholder="Search your contact by name, field and value" />
+          <!-- Tombol submit pencarian -->
+          <input class="btn btn-primary" type="submit" value="Search">
+        </div>
+      </form>
+
+        <p class="m-3">
+          Result for <strong class="fw-bold">
+            <%= q %>
+          </strong>
+        </p>
+
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+
+
+          <% result.forEach(contact=> { %>
+            <div class="col">
+              <div class="card h-100 shadow-sm ">
+                <div class="card-body">
+                  <h4 class="card-title text-primary mb-2">
+                    <a href="/contact/<%= contact.name %>">
+                      <%= contact.name %>
+                    </a>
+                  </h4>
+
+                  <ul class="list-unstyled text-muted small">
+                    <li><strong>Favorited:</strong>
+                      <%= contact.favorite ? 'Yes' : 'No' %>
+                    </li>
+                    <li><strong>Priority:</strong>
+                      <%= contact.priority %>
+                    </li>
+                    <li><strong>Created At:</strong>
+                      <%= contact.createdAt %>
+                    </li>
+                    <li><strong>updated At:</strong>
+                      <%= contact.updatedAt %>
+                    </li>
+                  </ul>
+
+                  <a href="/contact/<%= contact.name %>" class="btn btn-dark btn-sm mt-2 border border-light">Detail</a>
+
+                </div>
+              </div>
+            </div>
+            <% }) %>
+
+
+        </div>
+        <% if (result.length===0) { %>
+          <div class="col">
+            <div class="alert alert-danger text-center w-100">
+              No contacts found.
+            </div>
+          </div>
+          <% } %>
+
+
+
+
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center mt-4">
+
+                <li class="page-item <%= page <= 0 ? 'disabled' : '' %>">
+                  <a class="page-link" href="/search?page=<%= page - 1 %>&q=<%= q %>" tabindex="-1">Previous</a>
+                </li>
+
+                <!-- loop jumlah halaman -->
+                <!-- jika halaman saat ini = i mode on aktif -->
+                <% for (let i=0; i <=totalPage; i++) { %>
+                  <li class="page-item <%= i === page ? 'active' : '' %>">
+                    <a class="page-link" href="/search?page=<%= i %>&q=<%= q %>">
+                      <%= i %>
+                    </a>
+                  </li>
+                  <% } %>
+
+                    <!-- kalau halaman kurang dai total page bisa lanjutajlai -->
+                    <li class="page-item <%= page >= totalPage ? 'disabled' : '' %>">
+                      <a class="page-link" href="/search?page=<%= page + 1 %>&q=<%= q %>">Next</a>
+                    </li>
+
+              </ul>
+            </nav>
+

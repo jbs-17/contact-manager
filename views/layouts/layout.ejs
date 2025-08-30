@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" data-bs-theme=<%= theme === 'dark' ? "dark" : 'default' %>>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    <%= title %> | <%= APP_NAME %>
+  </title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="bg-body-tertiary">
+
+  <%- include('../partials/navbar.ejs') %>
+    <div class="container-md position-relative">
+
+
+
+      <%- body %>
+
+
+        <script type="module">
+
+          const is_sign_in_token = document.cookie.includes('sign_in_token');
+          console.log({is_sign_in_token});
+          if (is_sign_in_token) {
+            try {
+              // const response = await fetch(location.href.replace(location.pathname, '/sign-in/verfify'), {
+              const response = await fetch(location.origin + '/sign-in/verfify', {
+                headers: {
+                  'Accept': 'application/json'
+                }
+              }).then(response => response.json());
+              const { status } = response;
+              console.log({ status });
+              if (!status) {
+                notSignIn();
+              };
+            } catch (error) {
+              // location.href = '/sign-in';
+              notSignIn()
+            }
+          } else {
+            notSignIn();
+          }
+
+          function notSignIn() {
+            const dashboardPages = [
+              'dashboard'
+            ];
+            if (!dashboardPages.some(p => location.pathname.includes(p))) {
+              document.getElementById('dashboard-actions').remove()
+            };
+            document.querySelector('a[href="/dashboard"]').remove()
+            document.querySelector('a[href="/sign-out"]').remove();
+            document.querySelectorAll('form#nav-search-form').forEach(f => f.remove());
+          }
+        </script>
+    </div>
+
+
+    <style>
+      @keyframes out {
+        0% {
+          opacity: 1;
+          z-index: 9999;
+        }
+        
+        50% {
+          opacity: 0.4;
+          top: 50%;
+          z-index: 999;
+        }
+        
+        100% {
+          z-index: -1;
+          top: 100%;
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+
+      .animate-out {
+        animation: out .9s ease-out forwards;
+      }
+    </style>
+    <div id="loading-screen"
+      class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-white flex-column gap-3"
+      style="z-index: 999999; min-height: 75vh;">
+      <div class="d-flex flex-column justify-content-center align-items-center text-center mb-5"
+        style="margin-bottom: 13vh;">
+        <div class="d-flex gap-4">
+          <h1>Contact Manager</h1>
+          <!-- <div class="spinner-border spinner-grow spinner-border-sm" role="status" style="transform: scale(1);"></div>
+          <div class="spinner-border spinner-grow spinner-border-sm" role="status" style="transform: scale(1);"></div>
+          <div class="spinner-border spinner-grow spinner-border-sm" role="status" style="transform: scale(1);"></div> -->
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      function loadingOff() {
+        const ls = document.getElementById('loading-screen');
+        ls.classList.add('animate-out');
+        setTimeout(() => { ls.style.display = 'none' }, 2000);
+      }
+      window.addEventListener('load', () => {
+        loadingOff()
+      });
+
+
+      document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden') {
+            console.log('Pengguna meninggalkan tab.');
+            // Lakukan sesuatu saat meninggalkan tab
+          } else if (document.visibilityState === 'visible') {
+            console.log('Pengguna kembali ke tab.');
+            // Lakukan sesuatu saat kembali
+            location.reload()
+          }
+        });
+    </script>
+    
+
+
+
+
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+
+</body>
+
+</html>
