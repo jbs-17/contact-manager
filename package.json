@@ -5,6 +5,7 @@
   "description": "Final Project Belajar Dasar node.js",
   "main": "app.mjs",
   "scripts": {
+    "start": "node app.mjs",
     "test": "dev \"nodemon app.mjs\""
   },
   "repository": {
