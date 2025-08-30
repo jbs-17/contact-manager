@@ -3,7 +3,17 @@
   "builds": [
     {
       "src": "app.mjs",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "routes/**",
+          "utils/**",
+          "views/**",
+          "models/**",
+          "public/**",
+          "config.mjs"
+        ]
+      }
     },
     {
       "src": "public/**",
@@ -19,5 +29,8 @@
       "src": "/(.*)",
       "dest": "/app.mjs"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
