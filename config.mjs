@@ -1,9 +1,11 @@
-import { config as c} from "dotenv";
+import { config as c } from "dotenv";
 c();
-
-
+import path from 'node:path';
+const dirname = import.meta.dirname;
 const etc = {
+  dirname,
   APP_NAME: 'Contact Manager',
+  temp: path.join(dirname, 'temp')
 }
 const config = {
   ...etc,
@@ -13,7 +15,7 @@ const config = {
     msg: {},
     script: null,
     error: [],
-    theme:"light"
+    theme: "light"
   },
 };
 export default Object.freeze(config);

@@ -1,0 +1,101 @@
+<div class="container-lg p-lg-3 mt-3">
+
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      Import Contacts
+    </h1>
+    <p class="lead text-muted m-1">
+      Import Your Contact Here
+    </p>
+
+    <hr>
+
+    <% if (info.length) { %>
+      <div class="alert alert-success" role="alert">
+        <%= info %>
+      </div>
+      <hr>
+      <% } %>
+
+        <% if (error.length) { %>
+          <div class="alert alert-danger" role="alert">
+            <%= error %>
+          </div>
+          <hr>
+          <% } %>
+
+            <form method="post" enctype="multipart/form-data" class="col-md-12">
+
+              <div class="mb-3 col-12 p-3">
+
+
+                <label for="" class="form-label fw-bold fs-4">&diams; Import Options</label><br>
+                <ul class="fs-6">
+                  <li><strong>Merge</strong>: All of your contact doesnot be removed. If in this imported contatcs, thre
+                    are some contact has the same name with contact which has existed, it will be merged the
+                    dynamic fields</li>
+                  <li><strong>Overwrite</strong>: All of your contact will be replaced with this imported contacts</li>
+                </ul>
+                <!-- ospi -->
+                <select class="form-select form-select-lg border btn-outline-dark" name="option" required>
+                  <option selected value="merge">Merge</option>
+                  <option value="overwrite" id="overwrite">Overwrite</option>
+                </select>
+              </div>
+
+              <label for="" class="form-label fw-bold fs-4">&diams; Choose file</label>
+              <div class="col-12 p-3">
+
+                <div class="alert bg-opacity-25 bg-black" role="alert">
+                  <strong>Warning:</strong> A valid JSON File for contatcs data is from JSON File from "export
+                  contact" menu in dashboard!
+                </div>
+                <div class="mb-3">
+                  <input required type="file" class="form-control" name="file" accept=".json,application/json"
+                    placeholder="your json file contacts data" />
+                </div>
+              </div>
+
+
+              <button type="submit" value="Import" class="btn btn-warning border">Import</button>
+            </form>
+
+            <script>
+              const fileInput = document.querySelector('input[name="import"]');
+              const allowedTypes = ['application/json'];
+              const maxFileSize = 16 * 1024 * 1024; // 16 MB
+
+              fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+
+                if (!file) {
+                  return;
+                }
+
+                if (file.size > maxFileSize) {
+                  alert('Maximun file size is 16 MB.');
+                  e.target.value = ''; // Hapus file yang dipilih
+                }
+
+
+                if (!allowedTypes.includes(file.type)) {
+                  alert('File type invalid! pelese input JSON File.');
+                  e.target.value = ''; // Hapus file yang dipilih
+                }
+
+                // periksa ekstensi nama file
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+                if (fileExtension !== 'json') {
+                  alert('Ekstensi file tidak valid. Harap unggah file .json.');
+                  e.target.value = '';
+                }
+              });
+              document.querySelector('form').addEventListener('submit', (e) => {
+                if (!fileInput?.files?.[0]) {
+                  alert('File must be inputed!');
+                  return e.preventDefault();
+                }
+              })
+            </script>

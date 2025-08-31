@@ -91,6 +91,10 @@ app.use(isSignedIn);
 app.use('/', page);
 app.use('/', signedIn);
 
+app.get('/test', (req, res) => {
+  res.end('/test')
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).render("404", {
@@ -114,7 +118,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3000;
 connectToDB()
   .then(msg => {
     console.log(msg);

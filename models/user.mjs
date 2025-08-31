@@ -1,6 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Mongoose, Schema } from 'mongoose';
 
-
+const protectedKeys = ['_id', 'name', 'favorite', 'priority', 'createdAt', 'updatedAt'];
+// const protectedKeys = ['_id', 'name', 'favorite', 'priority', 'createdAt', 'updatedAt'];
 const ContactSchema = new Schema({
   name: {
     type: String,
@@ -112,7 +113,7 @@ UserSchema.methods.sortContactsBy = function (criteria = 'newest') {
 };
 
 
-const protectedKeys = ['_id', 'name', 'favorite', 'priority', 'createdAt', 'updatedAt'];
+
 UserSchema.methods.patchContact = async function (id, formData) {
   // 1. Cari contact berdasarkan _id
   const contact = this.contacts.id(id);
@@ -181,7 +182,108 @@ UserSchema.methods.changeEmail = async function (email) {
   return await this.save();
 }
 
+UserSchema.methods.importOverWrite = async function (contacts = []) {
+  let accepted = [];
+  let declined = [];
+  if (contacts.length <= 0) return false;
+  contacts.forEach(contact => {
+    contact.name = contact.name?.trim?.();
+    const sanitized = sanitizeContact(contact);
+    if (sanitized === false) return declined.push(contact);
+    if (accepted.some(c => c.name === contact.name || c._id === contact._id) === true) return declined.push(contact);
+    return accepted.push(contact);
+  });
+  this.contacts = accepted;
+  await this.save();
+  return {
+    accepted, declined
+  }
+};
+
+
+UserSchema.methods.importMerge = async function (contacts = []) {
+  let sanitized = [];
+  let declined = [];
+  let accepted = [];
+  if (contacts.length <= 0) return false;
+  //sanitasi tiap kontak import
+  contacts.forEach(contact => {
+    contact.name = contact.name?.trim?.();
+
+    const steril = sanitizeContact(contact);
+    if (steril === false) return declined.push(contact);
+    return sanitized.push(steril);
+  });
+
+
+
+  this.toJSON()?.contacts?.forEach?.((contact, i) => {
+    sanitized.forEach((imported, j) => {
+
+      if (imported.name === contact.name || imported._id === contact._id) { //gabung dulu field dinamisnya jika ada yang sama nama atau id nya
+        const { _id, name, priority, favorite, createdAt, updatedAt, ...fields } = imported;
+        const merged = { ...contact, ...fields };
+
+        const index = accepted.findIndex(c => c.name === merged.name || c._id === merged._id); //cari jika sudah ter accepct di bawah
+        if (index !== -1) { //jika index maka timpa 
+          return accepted[index] = merged;
+        };
+
+        if (accepted.some(c => c.name === merged.name || c._id === merged._id) === false) {
+          accepted.push(merged);
+          return  //jika tidak ya push yang merged
+        }
+
+
+      };
+
+      //jika tidak sama nama ataua id nya
+      if (accepted.some(c => c.name === contact.name || c._id === contact._id) === false) {
+        return accepted.push(contact);
+      }
+
+      if (accepted.some(c => c.name === imported.name || c._id === imported._id) === false) {
+        return accepted.push(imported);
+      }
+
+    })
+  });
+
+  //anjay seesai
+  this.contacts = accepted;
+  await this.save();
+
+  return {
+    before: this.toJSON()?.contacts,
+    contacts,
+    accepted, declined
+  }
+}
+
 const User = mongoose.model('User', UserSchema);
 export default User;
 
-const u = new User();
+
+
+function validateAllProtectedKeys({ _id, name, priority, favorite, createdAt, updatedAt }) {
+  if (!mongoose.isValidObjectId(_id)) return false;
+  if (typeof name !== 'string') return false;
+  if ((new Date(createdAt)).toString() === 'Invalid Date') return false;
+  if ((new Date(updatedAt)).toString() === 'Invalid Date') return false;
+  if (typeof favorite !== 'boolean') return false;
+  if (typeof priority !== 'number') return false;
+  if (priority < 0 || priority > 100) return false;
+  return true
+};
+
+function sanitizeContact({ _id, name, priority, favorite, createdAt, updatedAt, ...dynamics }) {
+  if (validateAllProtectedKeys({ _id, name, priority, favorite, createdAt, updatedAt }) === false) return false;
+  const contact = {
+    _id, name: name.trim(), priority, favorite, createdAt, updatedAt
+  };
+  for (const field in dynamics) {
+    const value = dynamics[field];
+    if (typeof value === 'string') contact[field] = value.trim();
+  }
+  return contact;
+}

@@ -49,11 +49,41 @@ signedIn.get("/sign-out", verifySignIn, async (req, res) => {
 
 
 signedIn.get("/dashboard", verifySignIn, async (req, res) => {
+  let totalContacts = 0;
+  let favoriteTotal = 0;
+  let recentContact = null;
+  let mostFields = [0, null];
+  const contacts = req.userData?.contacts
+  if (contacts?.length > 0) {
+    contacts.forEach((contact) => {
+      totalContacts++;
+      if (contact.favorite === true) favoriteTotal++;
+
+      if(recentContact == null){
+        recentContact = contact;
+      }else{
+        const current = new Date(recentContact.updatedAt), next = new Date(contact.updatedAt);
+        recentContact = current > next ? recentContact : contact;
+      }
+
+      const fieldsTotal = Object.keys(contact).length;
+      const referenceto = mostFields;
+      if (fieldsTotal > mostFields[0]) {
+        contact.fieldsTotal = fieldsTotal;
+        referenceto[0] = fieldsTotal;
+        referenceto[1] = contact;
+      };
+    });;
+  };
   res.render("dashboard", {
     ...layout,
     title: "Dashboard",
     signedIn: req.flash('sign-in'),
-    theme: req.theme
+    theme: req.theme,
+    totalContacts,
+    favoriteTotal,
+    recentContact,
+    mostFields
   });
 });
 signedIn.get('/settings', verifySignIn, async (req, res) => {
@@ -116,7 +146,6 @@ const validateFormData = [
 signedIn.post('/contact/add', validateFormData, async (req, res, formData) => {
   const contact = createContact(req.body);
   try {
-    console.log(req.body);
     const result = validationResult(req);
     if (!result.isEmpty()) {
       throw new Error('input invalid!')
@@ -253,7 +282,10 @@ signedIn.route('/contact/edit/:nameId')
       res.redirect('/contacts');
     }
   })
-  .patch(verifySignIn, async (req, res) => {
+  .patch([verifySignIn,
+    body('name').trim(),
+  ], async (req, res) => {
+    // req.body.name = req.body.name.trim()
     const formData = createContact(req.body);
     const { _id, name } = req.body;
     try {
@@ -427,6 +459,104 @@ signedIn.route('/email')
   });
 
 
+import fsp from 'node:fs/promises';
+import path from 'node:path';
+import multer from "multer";
+
+signedIn.get('/contacts/export', verifySignIn, async (req, res, next) => {
+  try {
+    req.headers.accept = 'application/json';
+    const contacts = req.user?.contacts ?? [];
+    const fileName = `${req.user?.email?.replaceAll('@', '')}.json`;
+    const filePath = path.join(config.temp, fileName);
+    await fsp.writeFile(filePath, JSON.stringify(contacts), 'utf8', { space: 2 });
+    const size = (await fsp.stat(filePath)).size;
+    res.set('Content-Length', `${size}`);
+    res.attachment(fileName);
+    res.contentType('application/json');
+
+    res.sendFile(filePath, async (error) => {
+      try {
+        await fsp.unlink(filePath);
+        console.log(`File deleted successfully: ${filePath}`);
+      } catch (cleanupError) {
+        console.error(`Error deleting file: ${filePath}`, cleanupError);
+      }
+      if (error) {
+        return next(error);
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+})
+
+
+// Konfigurasi Multer
+const storage = multer.diskStorage({
+  destination: config.temp,
+  'filename': (req, file, callback) => {
+    const username = req.user?.email?.replaceAll('@', '-');
+    const safeFilename = username ? `${username}-${Date.now()}.json` : `${file.originalname}-${Date.now()}.json`;
+    callback(null, safeFilename);
+  }
+})
+const uploadFile = multer({
+  storage,
+  limits: {
+    fieldSize: 1024 * 1024 * 16, // 16MB
+    files: 1, //  1 file 
+    fields: 2, // Tidak mengizinkan field non-file
+    parts: 4, //
+  },
+  fileFilter: (req, file, cb) => {
+    const isJson = file.mimetype === 'application/json';
+    const isJsonExt = path.extname(file.originalname).toLowerCase() === '.json';
+    if (isJson && isJsonExt) {
+      return cb(null, true); //termia file
+    }
+    return cb(new Error('invalid JSON file format!'), false); //error dan tolak file
+  },
+});
+
+signedIn.route('/contacts/import')
+  .get(verifySignIn, (req, res) => {
+    let info = req.flash('info');
+    let error = req.flash('error');
+    res.render("import", {
+      ...layout,
+      title: "Import Contacts",
+      info,
+      error
+    });
+  })
+  .post(verifySignIn, uploadFile.single('file'), async (req, res, next) => {
+    if (!req.file) {
+      return res.status(400).send('JSON file must attached');
+    }
+    const { option } = req.body;
+    let data;
+    try {
+      const jsonString = await fsp.readFile(req.file.path, 'utf-8');
+      data = JSON.parse(jsonString);
+      let result = null;
+      if (option === 'overwrite') {
+        result = await req.user?.importOverWrite?.(data);
+      }
+      if (option === 'merge') {
+        result = await req.user?.importMerge?.(data);
+      }
+      req.flash('info', `succes imported ${result?.accepted?.length ?? 0} contatcs and ${result.declined?.length ?? 0} contact failed to import!`);
+      // res.json({ message: 'File imported!', option, result });
+      res.redirect('/contacts/import')
+    } catch (error) {
+      next(error);
+    } finally {
+      await fsp.unlink(req.file.path).catch(err => {
+        console.error(`Gagal menghapus file sementara: ${req.file.path}`, err);
+      });
+    }
+  });
 
 
 
@@ -446,40 +576,38 @@ const formData = {
   // "value-2": "value"
 }
 function createContact({ name, priority = 0, favorite = "", ...fields }) {
-  favorite = Boolean(favorite.length);
+  favorite = Boolean(favorite.length); //
   const contact = {
-    name, priority, favorite,
+    name: name?.trim?.(), priority, favorite,
   };
   fields = Object.entries(fields);
   const fieldNames = [];
   const fieldValues = [];
   fields.forEach(([key, value]) => {
-    if (!key.length || !value.length) {
-      return
-    };
-    if (!includeNumber(key)) {
-      return
-    }
+    if (!key.length || !value.length) return;
+    if (!includeNumber(key)) return;
+
     const num = key.split('-')[1];
-    if (key.includes('field-')) {
-      return fieldNames.push([num, value]);
-    }
+    if (key.includes('field-')) return fieldNames.push([num, value]);
+
     return fieldValues.push([num, value]);
   });
 
   for (const [num, fieldName] of fieldNames) {
-    for (const [valueNum, fieldValue] of fieldValues) {
-      if (valueNum.includes(num)) {
-        contact[fieldName] = fieldValue;
-      }
+    for (const [valueNum, fieldValue] of fieldValues) { //jika field dan value nomornya cocok
+      if (valueNum.includes(num))
+        contact[fieldName?.trim?.()] = fieldValue?.trim?.();
     }
-  }
+  };
   return contact;
 };
 
 
-signedIn.get('/papua', (req, res) => {
-})
+
+
+
+
+
 
 function includeNumber(str = '') {
   for (const number of [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]) {
