@@ -2,36 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.mjs",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "routes/**",
-          "utils/**",
-          "views/**",
-          "models/**",
-          "public/**",
-          "temp/**",
-          "config.mjs"
-        ]
-      }
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
+      "src": "**/*",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/app.mjs"
+      "dest": "app.mjs"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
+
