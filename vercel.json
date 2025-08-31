@@ -15,10 +15,6 @@
           "temp/**"
         ]
       }
-    },
-    {
-      "src": "oke/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
