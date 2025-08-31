@@ -1,12 +1,34 @@
 {
   "version": 2,
-  "installCommand": "npm install",
-  "buildCommand": "echo 'No build step required'",
-  "outputDirectory": ".",
+  "builds": [
+    {
+      "src": "app.mjs",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "routes/**",
+          "utils/**",
+          "views/**",
+          "models/**",
+          "public/**",
+          "config.mjs",
+          "temp/**"
+        ]
+      }
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
+      "src": "/public/(.*)",
+      "dest": "/public/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "app.mjs"
+      "dest": "/app.mjs"
     }
   ]
 }
