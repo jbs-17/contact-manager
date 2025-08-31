@@ -2,17 +2,28 @@
   "builds": [
     {
       "src": "app.mjs",
-      "use": "@vercel/node"
-    }
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "routes/page.mjs",
+          "routes/signed-in.mjs",
+          "utils/db.mjs",
+          "utils/password.mjs",
+          "views/**",
+          "models/user.mjs",
+          "public/style.css",
+          "config.mjs"
+        ]
+      }
     ],
     "routes": [
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/app.mjs"
-    }
-  ]
-}
+      {
+        "src": "/public/(.*)",
+        "dest": "/public/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/app.mjs"
+      }
+    ]
+  }
