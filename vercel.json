@@ -19,10 +19,6 @@
   ],
   "routes": [
     {
-      "src": "/oke/(.*)",
-      "dest": "/oke/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/app.mjs"
     }
