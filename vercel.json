@@ -4,15 +4,16 @@
     {
       "src": "app.mjs",
       "use": "@vercel/node",
-      "includeFiles": [
-        "routes/**",
-        "utils/**",
-        "views/**",
-        "models/**",
-        "public/**",
-        "config.mjs",
-        "temp/**"
-      ]
+      "config": {
+        "includeFiles": [
+          "routes/**",
+          "utils/**",
+          "views/**",
+          "models/**",
+          "public/**",
+          "config.mjs",
+        ]
+      }
     },
     {
       "src": "public/**",
