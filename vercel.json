@@ -2,8 +2,16 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*",
-      "use": "@vercel/node"
+      "src": "app.mjs",
+      "use": "@vercel/node",
+      "includeFiles": [
+        "utils/**/*", 
+        "models/**/", 
+        "config.mjs", 
+        "routes/**/*",
+        "temp/**/*",
+        "public/**/*"
+        ]
     }
   ],
   "routes": [
@@ -13,4 +21,3 @@
     }
   ]
 }
-
