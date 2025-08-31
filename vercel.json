@@ -10,21 +10,21 @@
           "utils/**",
           "views/**",
           "models/**",
-          "public/**",
+          "oke/**",
           "config.mjs",
           "temp/**"
         ]
       }
     },
     {
-      "src": "public/**",
+      "src": "oke/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "src": "/oke/(.*)",
+      "dest": "/oke/$1"
     },
     {
       "src": "/(.*)",

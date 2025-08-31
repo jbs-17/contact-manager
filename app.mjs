@@ -52,7 +52,7 @@ app.use(rateLimit({
     res.render("429", { title: "Too-Many-Request", ...layout });
   }
 }))
-app.use(express.static("./public"));
+app.use(express.static("./oke"));
 
 
 // Routes
