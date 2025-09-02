@@ -133,5 +133,5 @@ connectToDB()
     process.exit(1);
   });
 
-
-export {app};
+import serverless from "serverless-http";
+export default serverless(app); 
