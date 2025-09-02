@@ -4,7 +4,7 @@ const dirname = import.meta.dirname;
 const etc = {
   dirname,
   APP_NAME: 'Contact Manager',
-  temp: path.join(dirname, 'tmp')
+  temp: "/tmp"
 }
 const config = {
   ...etc,
