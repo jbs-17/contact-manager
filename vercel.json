@@ -9,7 +9,7 @@
           "config.mjs",
           "models/user.mjs",
           "routes/signed-in.mjs",
-          "routes/page.mjs"
+          "routes/page.mjs",
           "utils/password.mjs",
           "utils/db.mjs",
           "utils/onetimepagefactory.mjs",
