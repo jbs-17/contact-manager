@@ -14,6 +14,7 @@ import jsonwebtoken from "jsonwebtoken";
 import User from "../models/user.mjs";
 import {root1} from '../routes/signed-in.mjs';
 import { fileURLToPath } from "url";
+import serverless from "serverless-http";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -123,8 +124,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 80;
 
 
-import serverless from "serverless-http";
 export default serverless(app); 
