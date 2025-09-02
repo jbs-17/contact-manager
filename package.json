@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Final Project Belajar Dasar node.js",
-  "main": "app.mjs",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
