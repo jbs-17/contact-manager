@@ -7,7 +7,7 @@
       "config":{
         "includeFiles": [
           "config.mjs",
-          "models/user.mjs
+          "models/user.mjs",
           "routes/signed-in.mjs",
           "routes/page.mjs"
           "utils/password.mjs",
