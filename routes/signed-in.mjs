@@ -556,10 +556,11 @@ signedIn.route('/contacts/import')
         result = await req.user?.importMerge?.(data);
       }
       req.flash('info', `succes imported ${result?.accepted?.length ?? 0} contatcs and ${result.declined?.length ?? 0} contact failed to import!`);
-      // res.json({ message: 'File imported!', option, result });
+
       res.redirect('/contacts/import')
     } catch (error) {
-      next(error);
+      req.flash('error', 'invalid JSON File data! Cant parse your contact data!')
+      res.redirect('/contacts/import');
     } finally {
       await fsp.unlink(req.file.path).catch(err => {
         console.error(`Gagal menghapus file sementara: ${req.file.path}`, err);
@@ -581,7 +582,7 @@ signedIn.route('/user/reset')
     });
   })
   .put(verifySignIn, async (req, res) => {
-    const { sure } = req.body;
+    const sure  = req?.body?.sure;
     if (!sure) {
       req.flash('error', "Failed to reset account! you does not check the sure checkbox!")
       return res.redirect('/user/reset');
