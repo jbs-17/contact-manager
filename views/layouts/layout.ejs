@@ -122,7 +122,10 @@
           } else if (document.visibilityState === 'visible') {
             console.log('Pengguna kembali ke tab.');
             // Lakukan sesuatu saat kembali
-            location.reload()
+            if(!location.href.includes('/import')){
+              location.reload()
+            }
+            
           }
         });
     </script>
