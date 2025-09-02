@@ -1,20 +1,20 @@
-import config from "../config.mjs";
-import connectToDB from "../utils/db.mjs";
+import config from "./config.mjs";
+import connectToDB from "./utils/db.mjs";
 import express from "express";
 import session from "express-session";
 import expressLayouts from "express-ejs-layouts";
 import flash from "connect-flash";
 import cookieParser from "cookie-parser";
 import rateLimit from 'express-rate-limit';
-import page from "../routes/page.mjs";
-import {signedIn,verifySignIn } from "../routes/signed-in.mjs";
+import page from "./routes/page.mjs";
+import {signedIn,verifySignIn } from "./routes/signed-in.mjs";
 import path from 'node:path';
 import methodOverride from 'method-override';
 import jsonwebtoken from "jsonwebtoken";
-import User from "../models/user.mjs";
-import {root1} from '../routes/signed-in.mjs';
+import User from "./models/user.mjs";
+import {root1} from './routes/signed-in.mjs';
 import { fileURLToPath } from "url";
-import serverless from "serverless-http";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,20 +24,20 @@ const {layout} = config;
 const app = express();
 
 app.use(async (req, res, next) => {
-  await connectToDB(); // pastikan DB sudah connect sebelum akses model
   next();
   const start = Date.now();
   res.on('finish', () => {
     const duration = Date.now() - start;
     console.log(`${req.method} ${req.url} ${res.statusCode} ${duration}ms`);
   });
+  
 });
 
 
 // Set view engine
 app.set("view engine", "ejs");
 //app.set("views", "../views/");
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", path.join(__dirname, "./views"));
 
 // Middleware
 app.use(expressLayouts);
@@ -58,7 +58,7 @@ app.use(flash());
 
 
 
-app.use(express.static(path.join(__dirname, "../oke")));
+app.use(express.static(path.join(__dirname, "./oke")));
 
 
 // Routes
@@ -125,5 +125,15 @@ app.use((err, req, res, next) => {
 });
 
 
-
-export default serverless(app); 
+const PORT = process.env.PORT || 80;
+connectToDB()
+  .then(msg => {
+    console.log(msg);
+    app.listen(PORT, () => {
+      console.log(`App running on port ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    process.exit(1);
+  });

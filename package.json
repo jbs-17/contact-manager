@@ -3,9 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Final Project Belajar Dasar node.js",
-  "main": "api/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node api/index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/jbs-17/contact-app#readme",
   "dependencies": {
-    "serverless-http": "^3.2.0",
     "bcryptjs": "^3.0.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",

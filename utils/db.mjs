@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+/*
+
 let cached = global.mongoose;
 if (!cached) {
     cached = global.mongoose = { conn: null, promise: null };
@@ -19,13 +21,14 @@ async function connectToDB() {
 }
 export default connectToDB;
 
+*/
 
-/*
+
 export const connectToDB = () =>
    new Promise(async (resolve, reject) => {
       try {
       await  mongoose.connect(process.env.MONGODB_URI, {
-            dbName: "contact-manager",
+            dbName: "contact-manager"
         });
         resolve('success to connect to database!');
       } catch (error) {
@@ -33,4 +36,4 @@ export const connectToDB = () =>
       }
     });
 export default connectToDB;
-*/
+
