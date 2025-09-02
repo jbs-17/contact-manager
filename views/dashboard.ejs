@@ -118,7 +118,7 @@
                   <h6 class="card-subtitle mb-2 text-white-50">Most Fields</h6>
                   <h2 class="card-title mb-0 fw-bold" id="companies-count">
                     <!-- <div class="spinner-border spinner-border-sm" role="status"></div> -->
-                    <%= mostFields?.[1]?.name %> (<%= mostFields[0] %>)
+                    <a class="text-light" href="/contact/<%= mostFields?.[1]?.name %>"><%= mostFields?.[1]?.name %></a> (<%= mostFields[0] %>)
                   </h2>
                 </div>
                 <div class="ms-3">
@@ -144,9 +144,9 @@
       <div class="row g-4 mb-4 p-1">
         <div class="col-12">
           <div class="card shadow-sm">
-            <div class="card-header bg-light border-bottom border-4">
+            <div class="card-header border-bottom border-4">
               <h5 class="card-title mb-0">
-                <i class="fas fa-bolt text-warning me-2"></i>
+                <i class="fas fa-bolt me-2 text-body"></i>
                 Quick Actions
               </h5>
             </div>

@@ -60,7 +60,8 @@
                   </label>
                   <script>
                     function favorite(state) {
-                      fetch(location.pathname + `?favorite=${state}`)
+                      const name = document.querySelector('input[name="name"]').value;
+                      fetch(`${location.origin}/contact/${name}/favorite`, {method: 'PATCH'})
                     }
                   </script>
                 </div>

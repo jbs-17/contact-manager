@@ -1,23 +1,25 @@
 <div class="container-lg p-lg-3 mt-3">
-  <div class="mb-4 p-3 d-flex flex-column justify-content-center align-items-center text-center gap-3 mt-3" style="min-height:80vh ;">
-    <h1 class="ft-bold fs-1">
-      INTERNAL SERVER ERROR
+
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-danger">
+      Internal Server Error
     </h1>
-    <h6 class="m-0">
+    <h6 class="m-0 text-black text-body">
       <%= error %>
     </h6>
 
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush text-break">
 
       <% if (stack) { %>
-        <p>
-          <% stack.forEach(s=> { %>
-            <li class="list-group-item list-group-item-danger">
-              <%= s %>
-            </li>
-            <% }) %>
-        </p>
-        <% } %>
-    </ul>
-  </div>
+      <p class="text-break">
+      <% stack.forEach(s=> { %>
+      <li class="list-group-item list-group-item-danger">
+      <%= s %>
+      </li >
+      <% }) %>
+    </p>
+    <% } %>
+  </ul>
+</div>
 </div>

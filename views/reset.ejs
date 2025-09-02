@@ -1,0 +1,58 @@
+<div class="container-lg p-lg-3 mt-3">
+
+
+  <div class="mb-4 p-3">
+    <h1 class="display-6 fw-bold text-primary">
+      Reset Account
+    </h1>
+    <p class="lead text-muted m-1">
+      Reset your account, all your contact and statistic will be deleted!
+    </p>
+
+    <hr>
+
+    <% if (info.length) { %>
+      <div class="alert alert-success" role="alert">
+        <%= info %>
+      </div>
+      <hr>
+      <% } %>
+
+        <% if (error.length) { %>
+          <div class="alert alert-danger" role="alert">
+            <%= error %>
+          </div>
+          <hr>
+          <% } %>
+
+            <div class="col-md-12 m-1 p-3">
+
+              <div class="col-md-3 col-md-10">
+                <h6 class="fs-3 col-md-12">Download and save your contacts data with:</h6>
+                <a href="/contacts/export" class="btn btn-success d-flex m-3 text-center col-md-6" onclick="">
+                  <span class="fw-semibold">Export Contacts</span>
+                </a>
+                <small class="ms-3">&times; download your contacts data in JSON FILE format</small>
+              </div>
+
+
+              <hr>
+              <div class="col-md-3 col-md-10">
+                <h6 class="fs-3 col-md-12">Reset account</h6>
+                <form action="?_method=PUT" method="post" hidden id="form-reset-account" onsubmit=""></form>
+
+                <button type="submit" form="form-reset-account" class="btn btn-warning d-flex m-3 text-center col-md-6"
+                  onclick="if(!confirm('Reset your account?')) event.preventDefault();">
+                  <span class="fw-semibold">Reset My Account</span>
+                </button>
+                <label for="sure" class="form-label ms-4 me-2">Are you sure? <input type="checkbox" name="sure" class="form-check-input form-check-inline" id="sure" form="form-reset-account" value="yes"><small></small></label>
+                <br>
+                <small class="ms-3 text-warning out">&times; All of your contact will be deleted </small>
+              </div>
+
+
+            </div>
+
+
+
+  </div>

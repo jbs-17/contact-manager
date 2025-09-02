@@ -13,33 +13,32 @@
 
       <% if (info.length) { %>
         <div class="alert alert-success" role="alert">
-          <strong>Succed to set new email!</strong>
+          <strong>Failed to delete account!</strong>
         </div>
         <% } %>
           <% if (error.length) { %>
             <div class="alert alert-danger" role="alert">
-              <strong>Failed to set new email!</strong><br>
+              <strong>Failed to delete account!</strong><br>
               <%= error %>
             </div>
             <% } %>
 
-              <form action="?_method=PATCH" method="post"
+              <form action="?_method=DELETE" method="post"
                 class="form-control d-flex mx-auto my-4 p-3 col-md-12 row shadow-lg">
                 <div class="mb-3 col-md-12">
                   <label for="" class="form-label fw-bold fs-6">Your current email</label>
                   <input required type="email" class="form-control form-text btn-outline-light border-light rounded-0"
-                    name="email-old" />
+                    name="email" />
                 </div>
                 <div class="mb-3 col-md-12">
                   <label for="" class="form-label fw-bold fs-6">Your Account Password</label>
-                  <input required type="password" class="form-control form-text btn-outline-light border-light rounded-0"
-                    name="password" />
+                  <input required type="password"
+                    class="form-control form-text btn-outline-light border-light rounded-0" name="password" />
                 </div>
                 <div class="mb-3 col-md-12">
-                  <label for="" class="form-label fw-bold fs-6">Your new email</label>
-                  <input required type="email" class="form-control form-text btn-outline-dark border-light rounded-0"
-                    name="email-new" />
+                  <label for="" class="form-label fw-bold fs-6 d-flex gap-2 justify-content-center align-middle"><span>I am sure to delete my account</span><input type="checkbox" name="sure" value="yes" class=""></label>
                 </div>
-
-                <input type="submit" value="Change My Email Account" class="btn btn-primary col-md-6 mx-auto m-3 p-1">
+                <input onclick="!confirm('Are you sure to delete your account?') ? event.preventDefault():''  " type="submit" value="Delete My Account" class="btn btn-danger col-md-6 mx-auto mb-1 p-1">
+                <small class="text-center text-danger fw-bolder">Your account and its information will be deleted</small>
+                
               </form>

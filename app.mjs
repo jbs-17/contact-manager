@@ -12,6 +12,8 @@ import path from 'node:path';
 import methodOverride from 'method-override';
 import jsonwebtoken from "jsonwebtoken";
 import User from "./models/user.mjs";
+import {root1} from './routes/signed-in.mjs';
+
 
 const {layout} = config;
 
@@ -52,7 +54,7 @@ app.use(rateLimit({
     res.render("429", { title: "Too-Many-Request", ...layout });
   }
 }))
-app.use(express.static("./oke"));
+app.use(express.static("./public"));
 
 
 // Routes
@@ -86,7 +88,7 @@ const isSignedIn = async (req, res, next) => {
   }
 };
 
-
+app.use('/', root1);
 app.use(isSignedIn);
 app.use('/', page);
 app.use('/', signedIn);
@@ -130,3 +132,6 @@ connectToDB()
     console.log(error);
     process.exit(1);
   });
+
+
+export {app};

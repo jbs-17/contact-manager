@@ -216,8 +216,9 @@ UserSchema.methods.importMerge = async function (contacts = []) {
   });
 
 
-
-  this.toJSON()?.contacts?.forEach?.((contact, i) => {
+  const contactsBefore = this.toJSON()?.contacts;
+  //JIKA SYDAH ADA ISIS nYA
+  contactsBefore?.forEach?.((contact, i) => {
     sanitized.forEach((imported, j) => {
 
       if (imported.name === contact.name || imported._id === contact._id) { //gabung dulu field dinamisnya jika ada yang sama nama atau id nya
@@ -225,8 +226,9 @@ UserSchema.methods.importMerge = async function (contacts = []) {
         const merged = { ...contact, ...fields };
 
         const index = accepted.findIndex(c => c.name === merged.name || c._id === merged._id); //cari jika sudah ter accepct di bawah
-        if (index !== -1) { //jika index maka timpa 
-          return accepted[index] = merged;
+        if (index !== -1) { //jika index maka merge lagi timpa 
+          const mergedAgain = { ...accepted[index], ...merged };
+          return accepted[index] = mergedAgain;
         };
 
         if (accepted.some(c => c.name === merged.name || c._id === merged._id) === false) {
@@ -246,9 +248,26 @@ UserSchema.methods.importMerge = async function (contacts = []) {
         return accepted.push(imported);
       }
 
-    })
+    });
   });
 
+
+  //  PENTING : jika contactSekarang atau beore tidak ada isinya
+  if (contactsBefore?.length === 0) {
+    sanitized.forEach((imported, j) => {
+
+      const index = accepted.findIndex(c => c.name === imported.name || c._id === imported._id);
+      if (index !== -1) { //jika index 
+        const merged = { ...accepted[index], ...imported };
+        return accepted[index] = merged;
+      };
+
+      if (accepted.some(c => c.name === imported.name || c._id === imported._id) === false) {
+        return accepted.push(imported);
+      }
+
+    });
+  };
   //anjay seesai
   this.contacts = accepted;
   await this.save();
@@ -258,6 +277,13 @@ UserSchema.methods.importMerge = async function (contacts = []) {
     contacts,
     accepted, declined
   }
+}
+
+
+
+UserSchema.methods.resetUser = async function () {
+  this.contacts = [];
+  return await this.save();
 }
 
 const User = mongoose.model('User', UserSchema);

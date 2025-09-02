@@ -4,8 +4,7 @@ import User from "../models/user.mjs";
 import jsonwebtoken from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import bcrypt from "bcryptjs";
-
-
+import { oneTimePageFactory } from '../utils/onetimepagefactory.mjs';
 
 
 const contactsPerPage = 10;
@@ -59,9 +58,9 @@ signedIn.get("/dashboard", verifySignIn, async (req, res) => {
       totalContacts++;
       if (contact.favorite === true) favoriteTotal++;
 
-      if(recentContact == null){
+      if (recentContact == null) {
         recentContact = contact;
-      }else{
+      } else {
         const current = new Date(recentContact.updatedAt), next = new Date(contact.updatedAt);
         recentContact = current > next ? recentContact : contact;
       }
@@ -173,15 +172,21 @@ signedIn.post('/contact/add', validateFormData, async (req, res, formData) => {
 
 
 //READ lihat detail kontak
+signedIn.patch('/contact/:nameId/favorite', async (req, res) => {
+  try {
+    const { nameId } = req.params;
+    if (nameId == null) throw Error('Contact name undefined');
+    req.user.toggleFavorite(nameId);
+    return res.json({ status: true });
+  } catch (error) {
+    return res.json({ status: false, error });
+  }
+})
 signedIn.get('/contact/:nameId', verifySignIn, async (req, res, namex) => {
   const info = req.flash('info')[0] || '';
-  const { favorite: f } = req.query;
   const { nameId } = req.params;
   namex = nameId;
   try {
-    if (f) {
-      return req.user.toggleFavorite(nameId);
-    }
     let { _id, favorite, priority, createdAt, updatedAt, name, ...fields } = await req.user.findContactByName(nameId);
     fields = Object.entries(fields);
     const data = {
@@ -387,7 +392,8 @@ signedIn.route('/password')
       ...layout,
       title: "Password",
       info,
-      error
+      error,
+      theme: req.theme,
     });
   })
   .patch(validatePassword, async (req, res) => {
@@ -427,7 +433,8 @@ signedIn.route('/email')
       ...layout,
       title: "Email",
       info,
-      error
+      error,
+      theme: req.theme,
     });
   })
   .patch(validateEmail, async (req, res) => {
@@ -462,6 +469,7 @@ signedIn.route('/email')
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import multer from "multer";
+import { randomUUID } from "node:crypto";
 
 signedIn.get('/contacts/export', verifySignIn, async (req, res, next) => {
   try {
@@ -527,7 +535,8 @@ signedIn.route('/contacts/import')
       ...layout,
       title: "Import Contacts",
       info,
-      error
+      error,
+      theme: req.theme,
     });
   })
   .post(verifySignIn, uploadFile.single('file'), async (req, res, next) => {
@@ -557,6 +566,99 @@ signedIn.route('/contacts/import')
       });
     }
   });
+
+
+signedIn.route('/user/reset')
+  .get(verifySignIn, (req, res) => {
+    let info = req.flash('info');
+    let error = req.flash('error');
+    res.render("reset", {
+      ...layout,
+      title: "Reset Contacts",
+      info,
+      error,
+      theme: req.theme,
+    });
+  })
+  .put(verifySignIn, async (req, res) => {
+    const { sure } = req.body;
+    if (!sure) {
+      req.flash('error', "Failed to reset account! you does not check the sure checkbox!")
+      return res.redirect('/user/reset');
+    }
+    try {
+      await req.user.resetUser();
+      req.flash('info', 'Succes reset account!')
+      return res.redirect('/user/reset');
+    } catch (error) {
+      req.flash('error', "Failed to reset account! internal server erro!");
+      return res.redirect('/user/reset');
+    }
+  });
+
+
+
+
+export const root1 = express.Router();
+const createOTPage = oneTimePageFactory(root1, 'get', '/info', { redirect: '/' });
+signedIn.route('/user/delete')
+  .get(verifySignIn, (req, res) => {
+    let info = req.flash('info');
+    let error = req.flash('error');
+    res.render("delete", {
+      ...layout,
+      title: "Delete Account",
+      info,
+      error,
+      theme: req.theme,
+    });
+  })
+  .delete([verifySignIn,
+    body('email', 'invalid email format!').isEmail().trim(),
+    body('password', 'invalid password format!').isLength({ 'min': 8, 'max': 999 }).trim()
+  ], async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      req.flash('error', result.array()[0].msg);
+      return res.redirect('/user/delete');
+    }
+    const user = req.user?.toJSON?.();
+    const { sure, email, password } = req.body;
+    if (email !== user.email) {
+      req.flash('error', 'Failed to delete account! Wrong email!');
+      return res.redirect('/user/delete');
+    }
+    if (await bcrypt.compare(password, user.password) === false) {
+      req.flash('error', 'Failed to delete account! Wrong password!');
+      return res.redirect('/user/delete');
+    }
+    if (!sure) {
+      req.flash('error', "Failed to delete account! you does not check the sure checkbox!")
+      return res.redirect('/user/delete');
+    };
+    try {
+      const user = req.user;
+      const uuid = randomUUID();
+      const deleteUser = await User.deleteOne({ _id: user.id });
+      console.log(deleteUser);
+      req.flash('info', 'Succes delete account!');
+      const result = createOTPage(uuid, (req, res, next) => {
+        res.render('info', {
+          ...layout,
+          title: 'Account Deletion Info',
+          theme: req.theme,
+          ...user
+        })
+      });
+      res.cookie('sign_in_token', '', { expires: 0 });
+      return res.redirect(result);
+    } catch (error) {
+      console.log(error);
+      req.flash('error', "Failed to delete account! internal server error!");
+      return res.redirect('/user/delete');
+    }
+  });
+
 
 
 
