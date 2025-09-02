@@ -22,10 +22,16 @@ const {layout} = config;
 
 const app = express();
 
-app.use((req,res,next)=>{
-  console.log(req.originalUrl);
+app.use(async (req, res, next) => {
+  await connectToDB(); // pastikan DB sudah connect sebelum akses model
   next();
-})
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`${req.method} ${req.url} ${res.statusCode} ${duration}ms`);
+  });
+});
+
 
 // Set view engine
 app.set("view engine", "ejs");
@@ -118,15 +124,7 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 80;
-connectToDB()
-  .then(msg => {
-    console.log(msg);
-    
-  })
-  .catch(error => {
-    console.log(error);
-    process.exit(1);
-  });
+
 
 import serverless from "serverless-http";
 export default serverless(app); 
