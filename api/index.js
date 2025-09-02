@@ -15,6 +15,9 @@ import User from "../models/user.mjs";
 import {root1} from '../routes/signed-in.mjs';
 
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const {layout} = config;
 
 const app = express();
@@ -26,7 +29,8 @@ app.use((req,res,next)=>{
 
 // Set view engine
 app.set("view engine", "ejs");
-app.set("views", "views/");
+//app.set("views", "../views/");
+app.set("views", path.join(__dirname, "../views"));
 
 // Middleware
 app.use(expressLayouts);
@@ -53,8 +57,10 @@ app.use(rateLimit({
   handler: (req, res) => {
     res.render("429", { title: "Too-Many-Request", ...layout });
   }
-}))
-app.use(express.static("../oke"));
+}));
+
+
+app.use(express.static(path.join(__dirname, "../oke")));
 
 
 // Routes
