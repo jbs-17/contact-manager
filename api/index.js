@@ -48,16 +48,7 @@ app.use(
 );
 app.use(flash());
 // rateLimit halaman
-app.use(rateLimit({
-  windowMs: 112 * 1000,
-  max: 1000,
-  message: 'Too many requests from this IP',
-  standardHeaders: false,
-  legacyHeaders: false,
-  handler: (req, res) => {
-    res.render("429", { title: "Too-Many-Request", ...layout });
-  }
-}));
+
 
 
 app.use(express.static(path.join(__dirname, "../oke")));
