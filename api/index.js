@@ -1,18 +1,18 @@
-import config from "./config.mjs";
-import connectToDB from "./utils/db.mjs";
+import config from "../config.mjs";
+import connectToDB from "../utils/db.mjs";
 import express from "express";
 import session from "express-session";
 import expressLayouts from "express-ejs-layouts";
 import flash from "connect-flash";
 import cookieParser from "cookie-parser";
 import rateLimit from 'express-rate-limit';
-import page from "./routes/page.mjs";
-import {signedIn,verifySignIn } from "./routes/signed-in.mjs";
+import page from "../routes/page.mjs";
+import {signedIn,verifySignIn } from "../routes/signed-in.mjs";
 import path from 'node:path';
 import methodOverride from 'method-override';
 import jsonwebtoken from "jsonwebtoken";
-import User from "./models/user.mjs";
-import {root1} from './routes/signed-in.mjs';
+import User from "../models/user.mjs";
+import {root1} from '../routes/signed-in.mjs';
 
 
 const {layout} = config;
@@ -54,7 +54,7 @@ app.use(rateLimit({
     res.render("429", { title: "Too-Many-Request", ...layout });
   }
 }))
-app.use(express.static("./oke"));
+app.use(express.static("../oke"));
 
 
 // Routes

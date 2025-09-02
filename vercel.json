@@ -1,29 +1,9 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "index.js",
-      "use": "@vercel/node",
-      "config":{
-        "includeFiles": [
-          "config.mjs",
-          "models/user.mjs",
-          "routes/signed-in.mjs",
-          "routes/page.mjs",
-          "utils/password.mjs",
-          "utils/db.mjs",
-          "utils/onetimepagefactory.mjs",
-          "views/**/*",
-          "oke/**",
-          "temp/**"
-          ]
-      }
-    }
+    { "src": "api/index.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "index.js"
-    }
+    { "src": "/(.*)", "dest": "api/index.js" }
   ]
 }
