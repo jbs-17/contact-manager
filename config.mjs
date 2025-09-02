@@ -1,12 +1,12 @@
-import dotenv from 'dotenv';
-dotenv.config()
+//import dotenv from 'dotenv';
+//dotenv.config()
 
 import path from 'node:path';
 const dirname = import.meta.dirname;
 const etc = {
   dirname,
   APP_NAME: 'Contact Manager',
-  temp: "./tmp"
+  temp: "/tmp"
 }
 const config = {
   ...etc,
