@@ -130,9 +130,7 @@ const PORT = process.env.PORT || 80;
 connectToDB()
   .then(msg => {
     console.log(msg);
-    app.listen(PORT, () => {
-      console.log(`App running on port ${PORT}`);
-    });
+    
   })
   .catch(error => {
     console.log(error);
